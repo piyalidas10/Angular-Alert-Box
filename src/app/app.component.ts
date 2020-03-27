@@ -1,18 +1,17 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { constants } from './constants';
 
 @Component({
   selector: 'app-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
+  styleUrls: ['app.component.css'],
+  templateUrl: 'app.component.html'
 })
-export class AppComponent {
-  title = 'flipflop';
-  public isResultSubmitted = false;
 
-  checkIsSubmitted(evt) {
-    console.log('evt => ', evt);
-    if (evt === 'true') {
-      this.isResultSubmitted = true;
-    }
+export class AppComponent implements OnInit {
+  links = [];
+
+  ngOnInit() {
+    this.links = Object.keys(constants);
+    console.log('links => ', this.links);
   }
 }

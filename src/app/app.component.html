@@ -1,13 +1,17 @@
 <!--The content below is only a placeholder and can be replaced.-->
 <div class="container">
     <div class="row">
-        <div class="col-lg-9 col-md-8 col-sm-7">
-            <h4>Flip Flop Quiz</h4>
-            <p>Click on the card</p>
+        <div class="col-12">
+                <nav class="navbar navbar-expand-sm bg-primary navbar-dark">
+                        <ul class="navbar-nav">
+                          <li *ngFor="let link of links; let i = index;" class="nav-item" [ngClass]="i === 0 ? 'active' : ''">
+                            <a class="nav-link" [routerLink]="[link]">{{link}} Page</a>
+                          </li>
+                        </ul>
+                      </nav>
         </div>
-        <div class="col-lg-3 col-md-4 col-sm-5">
-            <app-quizresult [isResultSubmitted]="isResultSubmitted"></app-quizresult>
+        <div class="col-12">
+            <router-outlet></router-outlet>
         </div>
     </div>
-    <app-quizhome (isSubmitted)="checkIsSubmitted($event)"></app-quizhome>
-</div>
+</div>        
