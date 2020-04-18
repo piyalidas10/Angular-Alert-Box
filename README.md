@@ -4,6 +4,8 @@ ng serve
 localhost:4200/
 ```
 
+![Alert-Message-Box](alert-box.png)
+
 # Alert Component Template
 Path: /app/shared/alert.component.html
 The alert component template contains the html for displaying alert messages at the top of the page.
