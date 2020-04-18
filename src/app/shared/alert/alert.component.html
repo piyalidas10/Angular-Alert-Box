@@ -1,0 +1,5 @@
+<div *ngIf="alertMsg && alertMsg.text !== undefined"
+[ngClass]="{ 'alert': alertMsg, 'alert-success': alertMsg.type === 'success', 'alert-danger': alertMsg.type === 'error' }">
+<i *ngIf="alertMsg.type === 'error'" class="fa fa-times-circle" aria-hidden="true"></i>
+<i *ngIf="alertMsg.type === 'success'" class="fa fa-check-circle" aria-hidden="true"></i>
+{{alertMsg.text}}</div>

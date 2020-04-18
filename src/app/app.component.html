@@ -1,17 +1,18 @@
 <!--The content below is only a placeholder and can be replaced.-->
-<div class="container">
+<div class="container box">
     <div class="row">
-        <div class="col-12">
-                <nav class="navbar navbar-expand-sm bg-primary navbar-dark">
-                        <ul class="navbar-nav">
-                          <li *ngFor="let link of links; let i = index;" class="nav-item" [ngClass]="i === 0 ? 'active' : ''">
-                            <a class="nav-link" [routerLink]="[link]">{{link}} Page</a>
-                          </li>
-                        </ul>
-                      </nav>
+        <div class="col-12 col-md-6 offset-md-3 col-lg-4 offset-lg-4">
+            <div class="row">
+                <div class="col-6">
+                    <app-success></app-success>
+                </div>
+                <div class="col-6">
+                    <app-error></app-error>
+                </div>
+            </div>
         </div>
         <div class="col-12">
-            <router-outlet></router-outlet>
+            <app-alert [alertMsg]="alertMsg"></app-alert>
         </div>
     </div>
 </div>        

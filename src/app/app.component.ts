@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { constants } from './constants';
+import { MessageService } from './service/message.service';
 
 @Component({
   selector: 'app-root',
@@ -8,10 +8,18 @@ import { constants } from './constants';
 })
 
 export class AppComponent implements OnInit {
-  links = [];
+  alertMsg: any;
+
+  constructor(private msgService: MessageService) {}
 
   ngOnInit() {
-    this.links = Object.keys(constants);
-    console.log('links => ', this.links);
+    this.showAlert();
+  }
+
+  showAlert() {
+    this.msgService.getMessage().subscribe(message => {
+      this.alertMsg = message;
+      console.log('showMsgAlert => ', this.alertMsg);
+    });
   }
 }

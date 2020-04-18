@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "interceptor": {
+    "alertbox": {
       "projectType": "application",
       "schematics": {},
       "root": "",
@@ -13,7 +13,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/interceptor",
+            "outputPath": "dist/alertbox",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
@@ -58,18 +58,18 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "interceptor:build"
+            "browserTarget": "alertbox:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "interceptor:build:production"
+              "browserTarget": "alertbox:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "interceptor:build"
+            "browserTarget": "alertbox:build"
           }
         },
         "test": {
@@ -106,15 +106,15 @@
           "builder": "@angular-devkit/build-angular:protractor",
           "options": {
             "protractorConfig": "e2e/protractor.conf.js",
-            "devServerTarget": "interceptor:serve"
+            "devServerTarget": "alertbox:serve"
           },
           "configurations": {
             "production": {
-              "devServerTarget": "interceptor:serve:production"
+              "devServerTarget": "alertbox:serve:production"
             }
           }
         }
       }
     }},
-  "defaultProject": "interceptor"
+  "defaultProject": "alertbox"
 }

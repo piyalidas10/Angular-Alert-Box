@@ -4,93 +4,92 @@ ng serve
 localhost:4200/
 ```
 
-# interceptor
+# Alert Component Template
+Path: /app/shared/alert.component.html
+The alert component template contains the html for displaying alert messages at the top of the page.
 
-https://medium.com/angular-in-depth/top-10-ways-to-use-interceptors-in-angular-db450f8a62d6
-https://stackblitz.com/github/melcor76/interceptors?file=src%2Fapp%2Finterceptors%2Fnotify.interptor.ts
+`
+<div *ngIf="alertMsg && alertMsg.text !== undefined"
+[ngClass]="{ 'alert': alertMsg, 'alert-success': alertMsg.type === 'success', 'alert-danger': alertMsg.type === 'error' }">
+<i *ngIf="alertMsg.type === 'error'" class="fa fa-times-circle" aria-hidden="true"></i>
+<i *ngIf="alertMsg.type === 'success'" class="fa fa-check-circle" aria-hidden="true"></i>
+{{alertMsg.text}}</div>
+`
 
-HttpInterceptor was introduced with Angular 4.3. It provides a way to intercept HTTP requests and responses to transform or handle them before passing them along.
+# App component
+The app component passes alert messages to the template whenever a message is received from the message service. It does this by subscribing to the message service's getMessage() method which returns an Observable.
+`
+showAlert() {
+    this.msgService.getMessage().subscribe(message => {
+      this.alertMsg = message;
+      console.log('showMsgAlert => ', this.alertMsg);
+    });
+  }
+  `
 
-# Https Interceptor (To change the request)
-### Manipulating the URL
+  # Message service
 
-![Https Interceptor](header-interceptor.png)
+The message service enables any component in the application to display alert messages at the top of the page via the app component.
 
-Sounds a bit risky when I say it out loud but let’s see how easily we can do it in an interceptor.
-We could, for example, want to change HTTP to HTTPS.
-It’s as easy as cloning the request and replacing http:// with https:// at the same time. Then we send the cloned, HTTPS request to the next handler.
+It has methods for displaying success and error messages, and a getMessage() method that returns an Observable that is used by the app component to subscribe to notifications for whenever a message should be displayed.
 
-```
-// clone request and replace 'http://' with 'https://' at the same time
-const httpsReq = req.clone({
-  url: req.url.replace("http://", "https://")
-});
+`
+import { Injectable } from '@angular/core';
+import { Router, NavigationStart } from '@angular/router';
+import { Observable, Subject, BehaviorSubject } from 'rxjs';
 
-return next.handle(httpsReq);
-```
+@Injectable({ providedIn: 'root' })
+export class MessageService {
+  messages: string[] = [];
+  private alertmsg = new BehaviorSubject<any>({});
+  private keepAfterNavigationChange = false;
 
-In the example, we set the URL with HTTP, but when we check the request, we can see that it changed to HTTPS.
+  constructor(private router: Router) {
+    // clear alert message on route change
+    router.events.subscribe(event => {
+        if (event instanceof NavigationStart) {
+            if (this.keepAfterNavigationChange) {
+                // only keep for a single location change
+                this.keepAfterNavigationChange = false;
+            } else {
+                // clear alert
+                this.alertmsg.next({});
+            }
+        }
+    });
+  }
 
-environments/environment.ts
-```
-export const environment = {
-  production: false,
-  apiEndpoint: 'http://jsonplaceholder.typicode.com/users'
-};
-```
+  success(message: string, keepAfterNavigationChange = false) {
+    this.keepAfterNavigationChange = keepAfterNavigationChange;
+    this.alertmsg.next({ type: 'success', text: message });
+    console.log('message service success => ', keepAfterNavigationChange);
+  }
+
+  error(message: string, keepAfterNavigationChange = false) {
+      this.keepAfterNavigationChange = keepAfterNavigationChange;
+      this.alertmsg.next({ type: 'error', text: message });
+      console.log('message service error => ', this.keepAfterNavigationChange, message);
+  }
+
+  getMessage() {
+      return this.alertmsg.asObservable();
+  }
+
+}
+`
+
+# Success component
+Send sucess message to success method of the message service
+
+`
+this.msgService.success('sucessfully completed', true);
+`
 
 
-# Convertres Interceptor (To change the response)
-### Change the first letter of response JSON keys
+# Error component
+Send error message to error method of the message service
 
-![Convertres Interceptor](convert-response-interceptor.png)
+`
+this.msgService.error('errors occured', true);
+`
 
-```
-              if (event instanceof HttpResponse) {
-                    function toConvert(ele) {
-                        const fr = ele.charAt(0).toLowerCase();
-                        const full = fr + ele.slice(1);
-                        return full;
-                    }
-                    const resObj = event.body;
-                    const sample = Object.keys(resObj).map(key => ({
-                        [toConvert(key)]: resObj[key]}
-                    ));
-                    const newObj = Object.assign({}, ...sample);
-                    console.log('ConvertresInterceptor event.body => ', newObj);
-                    const newRes = event.clone({body: newObj});
-                    return newRes;
-                }
-```
-
-
-# Header Interceptor (To change the request)
-### Add header of request
-
-![Header Interceptor](header-interceptor.png)
-
-```
-        if (!req.headers.has('Content-Type')) {
-            req = req.clone({
-              headers: req.headers.set('Content-Type', 'application/json')
-            });
-          }
-        const head = req.clone({setHeaders: {'Header-Name' : 'Piyali Das'}});
-        return next.handle(head);
-```
-
-# Notify Interceptor (Notify about response change)
-
-![Notify Interceptor](link-to-image)
-
-```                
-                if (event instanceof HttpResponse && event.status === 201) {
-                    this.toastr.success('Successfully created');
-                } else {
-                    this.toastr.error('Sorry! Not Successfully created');
-                }
-```                
-
-### Rxjs Pipe
-
-Pipes let you combine multiple functions into a single function. The pipe() function takes as its arguments the functions you want to combine, and returns a new function that, when executed, runs the composed functions in sequence.
